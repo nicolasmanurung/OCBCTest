@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.test.ocbc.data.source.OCBCRepository
 import com.test.ocbc.data.source.network.request.LoginRequest
 import com.test.ocbc.data.source.network.response.LoginResponse
+import com.test.ocbc.data.source.prefs.UserPreferences
 import com.test.ocbc.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OCBCViewModel @Inject constructor(
-    private val repository: OCBCRepository
+    private val repository: OCBCRepository,
+    private val userPref: UserPreferences
 ) : ViewModel() {
 
     private val _loginAuth = MutableLiveData<LoginResponse?>()
@@ -29,7 +31,7 @@ class OCBCViewModel @Inject constructor(
             when (result) {
                 is NetworkResult.Success -> {
                     result.data?.let {
-
+                        userPref.saveToken(it.token.toString())
                         _loginAuth.postValue(it)
                     }
                 }
