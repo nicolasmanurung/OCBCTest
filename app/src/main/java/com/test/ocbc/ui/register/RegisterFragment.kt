@@ -1,10 +1,11 @@
 package com.test.ocbc.ui.register
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.test.ocbc.base.BaseFragmentBinding
 import com.test.ocbc.data.source.network.request.RegistrationRequest
 import com.test.ocbc.databinding.FragmentRegisterBinding
@@ -22,7 +23,7 @@ class RegisterFragment : BaseFragmentBinding<FragmentRegisterBinding>() {
         observeLoading()
 
         binding.btnBack.setOnClickListener {
-            findNavController().popBackStack()
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
         binding.etUsername.doAfterTextChanged {
@@ -78,7 +79,7 @@ class RegisterFragment : BaseFragmentBinding<FragmentRegisterBinding>() {
         viewModel.postUserRegistration.observe(viewLifecycleOwner) { response ->
             if (response?.status == "success") {
                 requireActivity().showSnackImageToast("Register success!")
-                findNavController().popBackStack()
+                parentFragmentManager.popBackStack()
             }
         }
 

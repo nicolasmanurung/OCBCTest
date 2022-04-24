@@ -5,7 +5,9 @@
       <map>
         <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/drawable/ic_baseline_arrow_right_alt_24.xml" value="0.2925" />
         <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/drawable/ic_circle_warning.xml" value="0.203" />
+        <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/layout/activity_dashboard.xml" value="0.38697916666666665" />
         <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/layout/activity_main.xml" value="0.18" />
+        <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/layout/activity_splash_screen.xml" value="0.22291666666666668" />
         <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/layout/dialog_progress.xml" value="0.33" />
         <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/layout/fragment_dashboard.xml" value="0.33" />
         <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/layout/fragment_login.xml" value="0.33" />

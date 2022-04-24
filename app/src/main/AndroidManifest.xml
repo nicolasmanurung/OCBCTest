@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OCBCBank">
         <activity
-            android:name=".ui.MainNavigatorActivity"
+            android:name=".ui.splashscreen.SplashScreenActivity"
             android:exported="true"
             android:theme="@style/OCBCBank.NoActionBar">
             <intent-filter>
@@ -22,6 +22,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.MainNavigatorActivity"
+            android:exported="false"
+            android:theme="@style/OCBCBank.NoActionBar" />
+        <activity
+            android:name=".ui.dashboard.DashboardActivity"
+            android:exported="false"
+            android:theme="@style/OCBCBank.NoActionBar" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

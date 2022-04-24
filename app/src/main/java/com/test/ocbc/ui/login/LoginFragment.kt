@@ -1,15 +1,17 @@
 package com.test.ocbc.ui.login
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.test.ocbc.R
 import com.test.ocbc.base.BaseFragmentBinding
 import com.test.ocbc.data.source.network.request.LoginRequest
 import com.test.ocbc.databinding.FragmentLoginBinding
 import com.test.ocbc.ui.OCBCViewModel
+import com.test.ocbc.ui.dashboard.DashboardActivity
+import com.test.ocbc.ui.register.RegisterFragment
 
 class LoginFragment : BaseFragmentBinding<FragmentLoginBinding>() {
     private val viewModel: OCBCViewModel by viewModels()
@@ -40,7 +42,9 @@ class LoginFragment : BaseFragmentBinding<FragmentLoginBinding>() {
         }
 
         binding.btnRegistration.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+            requireActivity().supportFragmentManager.beginTransaction()
+                .add(R.id.fragmentContainerMain, RegisterFragment(), "RegisterFragment")
+                .addToBackStack("RegisterFragment").commit()
         }
     }
 
@@ -58,6 +62,13 @@ class LoginFragment : BaseFragmentBinding<FragmentLoginBinding>() {
     }
 
     private fun observeLogin() {
+        viewModel.loginAuth.observe(viewLifecycleOwner) {
+            if (it?.status == "success") {
+                startActivity(Intent(binding.root.context, DashboardActivity::class.java))
+                requireActivity().finish()
+            }
+        }
+
         viewModel.loginAuthThrowable.observe(viewLifecycleOwner) {
             when (it) {
                 404 -> {

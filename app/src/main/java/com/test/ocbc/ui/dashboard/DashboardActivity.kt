@@ -1,13 +1,14 @@
 package com.test.ocbc.ui.dashboard
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.fragment.app.viewModels
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.test.ocbc.base.BaseFragmentBinding
+import com.test.ocbc.base.BaseActivityBinding
 import com.test.ocbc.data.source.prefs.UserData
-import com.test.ocbc.databinding.FragmentDashboardBinding
+import com.test.ocbc.databinding.ActivityDashboardBinding
+import com.test.ocbc.ui.MainNavigatorActivity
 import com.test.ocbc.ui.OCBCViewModel
 import com.test.ocbc.ui.dashboard.adapter.TransactionHistoryAdapter
 import com.test.ocbc.utils.CurrencyUtil.toDollar
@@ -15,17 +16,19 @@ import com.test.ocbc.utils.ViewUtil.showSnackImageToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class DashboardFragment : BaseFragmentBinding<FragmentDashboardBinding>() {
+class DashboardActivity : BaseActivityBinding<ActivityDashboardBinding>() {
     private val viewModel: OCBCViewModel by viewModels()
     private lateinit var transactionAdapter: TransactionHistoryAdapter
 
-    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentDashboardBinding =
-        FragmentDashboardBinding::inflate
+    override val bindingInflater: (LayoutInflater) -> ActivityDashboardBinding =
+        ActivityDashboardBinding::inflate
 
-    override fun setupView(binding: FragmentDashboardBinding) {
+    override fun setupView(binding: ActivityDashboardBinding) {
+        checkIsLoginValid()
         observeUserData()
         observeUserBalance()
         observeListTransactionsHistory()
@@ -58,16 +61,16 @@ class DashboardFragment : BaseFragmentBinding<FragmentDashboardBinding>() {
 
     @SuppressLint("SetTextI18n")
     private fun observeUserBalance() {
-        viewModel.userBalance.observe(viewLifecycleOwner) { response ->
+        viewModel.userBalance.observe(this) { response ->
             if (response != null) {
                 binding.txtAmount.text = "SGD " + response.balance?.toDollar()
             }
         }
 
-        viewModel.userBalanceThrowable.observe(viewLifecycleOwner) { response ->
+        viewModel.userBalanceThrowable.observe(this) { response ->
             when (response) {
                 401 -> {
-                    requireActivity().showSnackImageToast("Auth has expired, Please Re-log in")
+                    showSnackImageToast("Auth has expired, Please Re-log in")
                     userLogout()
                 }
             }
@@ -75,16 +78,16 @@ class DashboardFragment : BaseFragmentBinding<FragmentDashboardBinding>() {
     }
 
     private fun observeListTransactionsHistory() {
-        viewModel.userTransactions.observe(viewLifecycleOwner) { response ->
+        viewModel.userTransactions.observe(this) { response ->
             if (response?.isNullOrEmpty() == false) {
                 transactionAdapter.differ.submitList(response)
             }
         }
 
-        viewModel.userTransactionsThrowable.observe(viewLifecycleOwner) { response ->
+        viewModel.userTransactionsThrowable.observe(this) { response ->
             when (response) {
                 401 -> {
-                    requireActivity().showSnackImageToast("Auth has expired, Please Re-log in")
+                    showSnackImageToast("Auth has expired, Please Re-log in")
                     userLogout()
                 }
             }
@@ -92,7 +95,7 @@ class DashboardFragment : BaseFragmentBinding<FragmentDashboardBinding>() {
     }
 
     private fun observeUserData() {
-        viewModel.userData.observe(viewLifecycleOwner) { response ->
+        viewModel.userData.observe(this) { response ->
             response?.let { dataUser ->
                 dataUser.accountNo?.let {
                     binding.txtAccountNo.text = it
@@ -108,5 +111,14 @@ class DashboardFragment : BaseFragmentBinding<FragmentDashboardBinding>() {
         prefs.saveToken("")
         prefs.saveUserData(UserData("-", "-"))
         prefs.isUserLogin(false)
+        checkIsLoginValid()
+    }
+
+    private fun checkIsLoginValid() = CoroutineScope(Dispatchers.Main).launch {
+        val isUserLogin = prefs.isUserLogin.firstOrNull()
+        if (isUserLogin == false) {
+            startActivity(Intent(this@DashboardActivity, MainNavigatorActivity::class.java))
+            finish()
+        }
     }
 }
