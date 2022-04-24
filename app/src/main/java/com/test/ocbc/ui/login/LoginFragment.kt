@@ -2,13 +2,15 @@ package com.test.ocbc.ui.login
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import com.test.ocbc.base.BaseFragmentBinding
 import com.test.ocbc.data.source.network.request.LoginRequest
 import com.test.ocbc.databinding.FragmentLoginBinding
 import com.test.ocbc.ui.OCBCViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class LoginFragment : BaseFragmentBinding<FragmentLoginBinding>() {
     private val viewModel: OCBCViewModel by viewModels()
@@ -18,6 +20,7 @@ class LoginFragment : BaseFragmentBinding<FragmentLoginBinding>() {
 
     override fun setupView(binding: FragmentLoginBinding) {
         observeLogin()
+        observeLoading()
 
         binding.etUsername.doAfterTextChanged {
             binding.textFieldUsername.error = null
@@ -28,15 +31,12 @@ class LoginFragment : BaseFragmentBinding<FragmentLoginBinding>() {
         }
 
         binding.btnLogin.setOnClickListener {
-            progressDialog.setRefreshing(true)
             if (isAllFilledCorrect()) {
                 val loginRequest = LoginRequest(
                     username = binding.etUsername.text.toString(),
                     password = binding.etPassword.text.toString()
                 )
                 viewModel.login(loginRequest)
-            } else {
-                progressDialog.setRefreshing(false)
             }
         }
     }
@@ -55,17 +55,7 @@ class LoginFragment : BaseFragmentBinding<FragmentLoginBinding>() {
     }
 
     private fun observeLogin() {
-        viewModel.loginAuth.observe(viewLifecycleOwner) {
-            if (it?.status == "success") {
-                progressDialog.setRefreshing(false)
-                Toast.makeText(binding.root.context, it.username, Toast.LENGTH_LONG).show()
-            } else {
-                progressDialog.setRefreshing(false)
-            }
-        }
-
         viewModel.loginAuthThrowable.observe(viewLifecycleOwner) {
-            progressDialog.setRefreshing(false)
             when (it) {
                 404 -> {
                     binding.textFieldUsername.error = "User not found"
@@ -74,6 +64,16 @@ class LoginFragment : BaseFragmentBinding<FragmentLoginBinding>() {
                 401 -> {
                     binding.textFieldPassword.error = "Wrong password"
                 }
+            }
+        }
+    }
+
+    private fun observeLoading() {
+        viewModel.showingLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                progressDialog.setRefreshing(true)
+            } else {
+                progressDialog.setRefreshing(false)
             }
         }
     }

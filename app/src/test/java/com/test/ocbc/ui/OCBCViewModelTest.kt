@@ -7,6 +7,8 @@ import com.test.ocbc.data.source.OCBCRepository
 import com.test.ocbc.data.source.network.request.LoginRequest
 import com.test.ocbc.data.source.network.response.LoginResponse
 import com.test.ocbc.data.source.prefs.UserPreferences
+import com.test.ocbc.utils.CurrencyUtil.toDollar
+import com.test.ocbc.utils.DateUtil.changeTo
 import com.test.ocbc.utils.NetworkResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
@@ -71,5 +73,15 @@ class OCBCViewModelTest {
 
         verify(repository).postUserLogin(eq(bodyRequest))
         assertThat(resultError).isEqualTo(404)
+    }
+
+    @Test
+    fun testDateTrue() = runTest {
+        assertThat("2022-03-10T15:36:52.413Z".changeTo("dd MMM yyyy")).isEqualTo("10 Mar 2022")
+    }
+
+    @Test
+    fun testMoneyTrue() = runTest {
+        assertThat(5200.20.toDollar()).isEqualTo("5,200.20")
     }
 }

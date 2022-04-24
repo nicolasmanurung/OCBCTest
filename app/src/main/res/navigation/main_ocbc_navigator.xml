@@ -9,5 +9,11 @@
         android:id="@+id/loginFragment"
         android:name="com.test.ocbc.ui.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login">
+    </fragment>
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.test.ocbc.ui.dashboard.DashboardFragment"
+        android:label="fragment_dashboard"
+        tools:layout="@layout/fragment_dashboard" />
 </navigation>
