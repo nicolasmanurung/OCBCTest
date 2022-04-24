@@ -3,11 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/drawable/ic_baseline_arrow_right_alt_24.xml" value="0.2925" />
         <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/drawable/ic_circle_warning.xml" value="0.203" />
-        <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/layout/activity_main.xml" value="0.2861111111111111" />
+        <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/layout/activity_main.xml" value="0.18" />
         <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/layout/dialog_progress.xml" value="0.33" />
         <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/layout/fragment_dashboard.xml" value="0.33" />
         <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/layout/fragment_login.xml" value="0.33" />
+        <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/layout/fragment_register.xml" value="0.33" />
         <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/layout/item_card_transaction_history.xml" value="0.33" />
         <entry key="..\:/Android Stuff/Testing/OCBCBank/app/src/main/res/layout/item_transaction_history.xml" value="0.5" />
       </map>

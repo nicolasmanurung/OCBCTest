@@ -6,19 +6,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.test.ocbc.data.source.OCBCRepository
 import com.test.ocbc.data.source.network.request.LoginRequest
+import com.test.ocbc.data.source.network.request.RegistrationRequest
 import com.test.ocbc.data.source.network.response.BalanceResponse
 import com.test.ocbc.data.source.network.response.LoginResponse
+import com.test.ocbc.data.source.network.response.RegistrationResponse
 import com.test.ocbc.data.source.prefs.UserData
 import com.test.ocbc.data.source.prefs.UserPreferences
 import com.test.ocbc.domain.transaction.model.MTransactionItem
 import com.test.ocbc.domain.transaction.toTransactionMapper
 import com.test.ocbc.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,6 +54,14 @@ class OCBCViewModel @Inject constructor(
     private val _userData = MutableLiveData<UserData?>()
     val userData: LiveData<UserData?>
         get() = _userData
+
+    private val _postUserRegistration = MutableLiveData<RegistrationResponse?>()
+    val postUserRegistration: LiveData<RegistrationResponse?>
+        get() = _postUserRegistration
+
+    private val _postUserRegistrationThrowable = MutableLiveData<Int?>()
+    val postUserRegistrationThrowable: LiveData<Int?>
+        get() = _postUserRegistrationThrowable
 
     fun login(body: LoginRequest) = viewModelScope.launch {
         _showingLoading.postValue(true)
@@ -111,12 +118,12 @@ class OCBCViewModel @Inject constructor(
     }
 
     fun getUserTransactions(authToken: String?) = viewModelScope.launch {
-        authToken?.let{
+        authToken?.let {
             repository.getUserTransactions(it).collect { result ->
                 when (result) {
                     is NetworkResult.Success -> {
-                        result.data?.let {
-                            _userTransactions.postValue(it.data?.let { transactionList ->
+                        result.data?.let { transactionResponse ->
+                            _userTransactions.postValue(transactionResponse.data?.let { transactionList ->
                                 toTransactionMapper(
                                     transactionList
                                 )
@@ -126,12 +133,34 @@ class OCBCViewModel @Inject constructor(
 
                     is NetworkResult.Error -> {
                         _userTransactions.postValue(null)
-                        result.code?.let {
-                            _userTransactionsThrowable.postValue(it)
+                        result.code?.let { code ->
+                            _userTransactionsThrowable.postValue(code)
                         }
                     }
                 }
             }
         }
     }
+
+    fun postUserRegistration(body: RegistrationRequest) = viewModelScope.launch {
+        _showingLoading.postValue(true)
+        repository.postUserRegistration(body).collect { result ->
+            when (result) {
+                is NetworkResult.Success -> {
+                    _showingLoading.postValue(false)
+                    result.data?.let {
+                        _postUserRegistration.postValue(it)
+                    }
+                }
+
+                is NetworkResult.Error -> {
+                    _showingLoading.postValue(false)
+                    result.code?.let {
+                        _postUserRegistrationThrowable.postValue(it)
+                    }
+                }
+            }
+        }
+    }
+
 }

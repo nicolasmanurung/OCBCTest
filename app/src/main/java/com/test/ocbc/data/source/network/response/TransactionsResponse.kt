@@ -14,7 +14,8 @@ data class TransactionsResponse(
 data class TransactionItem(
     val amount: Double,
     val description: String = "",
-    val receipient: Receipient,
+    val receipient: Receipient? = null,
+    val sender: Sender? = null,
     val transactionDate: String,
     val transactionId: String,
     val transactionType: String
@@ -22,6 +23,12 @@ data class TransactionItem(
 
 @Parcelize
 data class Receipient(
-    val accountHolder: String,
+    val accountHolder: String = "Unknown",
+    val accountNo: String
+) : Parcelable
+
+@Parcelize
+data class Sender(
+    val accountHolder: String = "Unknown",
     val accountNo: String
 ) : Parcelable

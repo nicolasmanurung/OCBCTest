@@ -11,6 +11,18 @@ fun toTransactionMapper(response: List<TransactionItem>): List<MTransactionItem>
     return data.map {
         val listDetail = arrayListOf<MDetailTransaction>()
         it.value.forEach { item ->
+            var accountHolder = ""
+            var accountNo = ""
+            when (item.transactionType) {
+                "received" -> {
+                    item.sender?.accountHolder?.let { acHolder -> accountHolder = acHolder }
+                    item.sender?.accountNo?.let { acNo -> accountNo = acNo }
+                }
+                "transfer" -> {
+                    item.receipient?.accountHolder?.let { acHolder -> accountHolder = acHolder }
+                    item.receipient?.accountNo?.let { acNo -> accountNo = acNo }
+                }
+            }
             listDetail.add(
                 MDetailTransaction(
                     transactionDate = item.transactionDate,
@@ -18,8 +30,8 @@ fun toTransactionMapper(response: List<TransactionItem>): List<MTransactionItem>
                     description = item.description,
                     transactionId = item.transactionId,
                     transactionType = item.transactionType,
-                    accountHolder = item.receipient.accountHolder,
-                    accountNo = item.receipient.accountNo
+                    accountHolder = accountHolder,
+                    accountNo = accountNo
                 )
             )
         }

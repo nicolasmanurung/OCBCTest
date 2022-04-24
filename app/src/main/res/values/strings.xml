@@ -9,4 +9,5 @@
     <string name="your_transaction_history">Your transaction history</string>
     <string name="make_transfer">Make Transfer</string>
     <string name="logout">Logout</string>
+    <string name="repassword">Confirm Password</string>
 </resources>

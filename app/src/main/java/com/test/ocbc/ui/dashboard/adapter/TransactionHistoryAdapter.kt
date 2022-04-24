@@ -71,11 +71,22 @@ class TransactionHistoryAdapter :
                 binding.txtTransactionNameStakeholder.text = item.accountHolder
                 binding.txtAccountNo.text = item.accountNo
                 when (item.transactionType) {
-                    "transfer" -> {
+                    "received" -> {
                         binding.txtSumTransaction.text = item.amount.toDollar()
                     }
-                    else -> {
+
+                    "transfer" -> {
                         binding.txtSumTransaction.text = "-" + item.amount.toDollar()
+                        binding.txtSumTransaction.setTextColor(
+                            ContextCompat.getColor(
+                                binding.root.context,
+                                R.color.primaryTextColor50
+                            )
+                        )
+                    }
+
+                    else -> {
+                        binding.txtSumTransaction.text = item.amount.toDollar()
                         binding.txtSumTransaction.setTextColor(
                             ContextCompat.getColor(
                                 binding.root.context,

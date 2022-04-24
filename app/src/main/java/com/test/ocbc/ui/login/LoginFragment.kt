@@ -4,13 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.test.ocbc.R
 import com.test.ocbc.base.BaseFragmentBinding
 import com.test.ocbc.data.source.network.request.LoginRequest
 import com.test.ocbc.databinding.FragmentLoginBinding
 import com.test.ocbc.ui.OCBCViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class LoginFragment : BaseFragmentBinding<FragmentLoginBinding>() {
     private val viewModel: OCBCViewModel by viewModels()
@@ -38,6 +37,10 @@ class LoginFragment : BaseFragmentBinding<FragmentLoginBinding>() {
                 )
                 viewModel.login(loginRequest)
             }
+        }
+
+        binding.btnRegistration.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
     }
 

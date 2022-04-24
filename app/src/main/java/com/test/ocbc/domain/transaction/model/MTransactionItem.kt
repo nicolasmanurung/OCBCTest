@@ -15,7 +15,7 @@ data class MDetailTransaction(
     val description: String? = "",
     val transactionId: String,
     val transactionType: String,
-    val accountHolder: String,
+    val accountHolder: String = "Unknown",
     val accountNo: String,
     val transactionDate: String
 ) : Parcelable
