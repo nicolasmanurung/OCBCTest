@@ -12,7 +12,10 @@ import com.test.ocbc.ui.OCBCViewModel
 import com.test.ocbc.ui.dashboard.adapter.TransactionHistoryAdapter
 import com.test.ocbc.utils.CurrencyUtil.toDollar
 import com.test.ocbc.utils.ViewUtil.showSnackImageToast
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class DashboardFragment : BaseFragmentBinding<FragmentDashboardBinding>() {
@@ -29,12 +32,20 @@ class DashboardFragment : BaseFragmentBinding<FragmentDashboardBinding>() {
         setupAdapter()
 
         // Fetch Data Trigger Here
-        viewModel.getUserTransactions()
-        viewModel.getUserBalance()
+        getAllData()
 
         binding.btnLogout.setOnClickListener {
             userLogout()
         }
+    }
+
+    private fun getAllData() = CoroutineScope(Dispatchers.IO).launch {
+        val userData = prefs.userData.first()
+        val authToken = prefs.authToken.first()
+
+        // Fetch Data Trigger Here
+        viewModel.getUserTransactions(authToken = authToken)
+        viewModel.getUserBalance(authToken = authToken, userData = userData)
     }
 
     private fun setupAdapter() {

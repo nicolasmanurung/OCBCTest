@@ -8,7 +8,7 @@ data class BalanceResponse(
     val accountNo: String? = "",
     val balance: Double? = 0.0,
     val error: Error? = null,
-    val status: String
+    val status: String? = ""
 ) : Parcelable
 
 @Parcelize

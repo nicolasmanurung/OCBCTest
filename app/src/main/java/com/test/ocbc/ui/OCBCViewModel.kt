@@ -14,9 +14,11 @@ import com.test.ocbc.domain.transaction.model.MTransactionItem
 import com.test.ocbc.domain.transaction.toTransactionMapper
 import com.test.ocbc.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -86,13 +88,10 @@ class OCBCViewModel @Inject constructor(
         }
     }
 
-    fun getUserBalance() = viewModelScope.launch {
-        val authToken = userPref.authToken.first()
-        val userData = userPref.userData.first()
+    fun getUserBalance(authToken: String?, userData: UserData?) = viewModelScope.launch {
         _userData.postValue(userData)
-
-        authToken?.let { token ->
-            repository.getUserBalance(token).collect { result ->
+        authToken?.let {
+            repository.getUserBalance(it).collect { result ->
                 when (result) {
                     is NetworkResult.Success -> {
                         result.data?.let {
@@ -111,10 +110,9 @@ class OCBCViewModel @Inject constructor(
         }
     }
 
-    fun getUserTransactions() = viewModelScope.launch {
-        val authToken = userPref.authToken.first()
-        authToken?.let { token ->
-            repository.getUserTransactions(token).collect { result ->
+    fun getUserTransactions(authToken: String?) = viewModelScope.launch {
+        authToken?.let{
+            repository.getUserTransactions(it).collect { result ->
                 when (result) {
                     is NetworkResult.Success -> {
                         result.data?.let {

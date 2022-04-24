@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class TransactionsResponse(
     val `data`: List<TransactionItem>? = listOf(),
-    val status: String,
+    val status: String? = "",
     val error: Error? = null,
 ) : Parcelable
 
